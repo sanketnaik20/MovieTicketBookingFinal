@@ -88,7 +88,7 @@ public class Movie {
         return totalSeats - bookedSeats;
     }
 
-    // Method to book seats
+  
     public void bookSeats(int seats) {
         if (bookedSeats + seats > totalSeats) {
             throw new IllegalArgumentException("Not enough seats available");

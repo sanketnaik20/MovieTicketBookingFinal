@@ -22,9 +22,9 @@ public class User {
     private int bookedSeats;
 
     @Column(nullable = false)
-    private double totalAmount; // Store the total amount for the booking
+    private double totalAmount; 
 
-    // Getters and Setters
+
     public Long getId() {
         return id;
     }

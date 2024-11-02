@@ -37,21 +37,35 @@ public class MovieController {
     }
 
     @PostMapping("/book/{id}")
-    public String bookTickets(@PathVariable Long id, @RequestParam String name, @RequestParam String email,
-            @RequestParam String phone, @RequestParam int seats) {
-        Movie movie = movieService.getMovieById(id);
-        movie.bookSeats(seats);
-
-        User user = new User();
-        user.setName(name);
-        user.setEmail(email);
-        user.setPhone(phone);
-        user.setBookedSeats(seats);
-        user.setTotalAmount(seats * movie.getTicketPrice());
-
-        userService.saveUser(user);
-        movieService.saveMovie(movie);
-
-        return "redirect:/movies";
+    public String bookTickets(@PathVariable Long id, 
+                          @RequestParam String name, 
+                          @RequestParam String email,
+                          @RequestParam String phone, 
+                          @RequestParam int seats, 
+                          Model model) {
+    Movie movie = movieService.getMovieById(id);
+    
+    // Check if the requested seats exceed available seats
+    if (seats > movie.getAvailableSeats()) {
+        model.addAttribute("error", "Ticket limit exceeded! Available seats: " + movie.getAvailableSeats());
+        model.addAttribute("movie", movie);
+        return "movie_details"; // Show the movie details page with an error
     }
+    
+    // Proceed to book tickets if the limit is not exceeded
+    movie.bookSeats(seats);
+    
+    User user = new User();
+    user.setName(name);
+    user.setEmail(email);
+    user.setPhone(phone);
+    user.setBookedSeats(seats);
+    user.setTotalAmount(seats * movie.getTicketPrice());
+    
+    userService.saveUser(user);
+    movieService.saveMovie(movie);
+    
+    return "redirect:/movies"; // Redirect after booking
+}
+
 }
